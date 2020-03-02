@@ -2,7 +2,7 @@
     class DBController {
         private $hostname       =       "localhost";
         private $username       =       "root";
-        private $password       =       "root";
+        private $password       =       "";
         private $db             =       "autók";
 
         public function connect() {
@@ -15,3 +15,4 @@
             $conn->close();
         }
     }
+?>

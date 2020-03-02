@@ -1,22 +1,19 @@
 <?php
 include_once 'data-controller.php';
 
-$data               =           new DataController();
-$languages          =           $data->getLanguages();
+//$data               =           new DataController();
+$markak         =           $data->getMarkak();
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap-grid.min.css'>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.12/js/bootstrap-select.min.js'></script>
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.12/css/bootstrap-select.min.css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <title>Autókatalógus</title>
 </head>
 
@@ -25,58 +22,59 @@ $languages          =           $data->getLanguages();
     <div class="row">
       <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 m-auto d-block shadow p-5">
         <form id="filterForm">
-          <label for="selectLang">Márkák: </label>
+          <label for="selectMarka">Márkák: </label>
           <div class="form-group">
-            <select class="form-control form-control-md" id="selectLang">
+            <select class="form-control form-control-md" id="selectMarka">
               <option selected disabled>Választ </option>
-              <?php foreach ($languages as $language) : ?>
-                <option value="<?php echo $language['language_id']; ?> ">
-                  <?php echo $language['markak_name']; ?> </option>
+              <?php foreach ($markak as $markak) : ?>
+                <option value="<?php echo $markak['id']; ?> ">
+                  <?php echo $markak['markak_name']; ?> </option>
               <?php endforeach; ?>
             </select>
           </div>
 
           <label for="selectFrame">Típusok: </label>
           <div class="form-group">
-            <select class="form-control form-control-md" id="selectFrame">
+            <select class="form-control form-control-md" id="selectTipus">
               <option>Választ </option>
             </select>
           </div>
-          </div>
-        </form>
       </div>
+      </form>
     </div>
+  </div>
   </div>
 
   <script>
+
     $(document).ready(function() {
 
-      
-      $("#selectLang").change(function() {
-        var languageId = $(this).val();
-        $("#selectFrame").fadeIn('slow');
+
+      $("#selectMarka").change(function() {
+        var markId = $(this).val();
+        $("#selectTipus").fadeIn('slow');
 
         $.ajax({
           url: 'process-controller.php',
           type: 'POST',
           data: {
-            langId: languageId
+            markId: markId
           },
           dataType: "JSON",
 
           success: function(result) {
             var items = "";
-            $("#selectFrame").empty();
-            $("#selectVersion").empty();
+            $("#selectMarka").empty();
+            $("#selectTipus").empty();
 
-            $("#selectFrame").append(
-              "<option selected disabled> Select Framework </option>");
-            $("#selectVersion").append(
-              "<option selected disabled> Select Version </option>");
+            $("#selectMarka").append(
+              "<option selected disabled> Választ </option>");
+            $("#selectTipus").append(
+              "<option selected disabled> Választ </option>");
 
             $.each(result, function(i, item) {
-              $("#selectFrame").append("<option value='" + item
-                .framework_id + "'>" + item.framework_name +
+              $("#selectTipus").append("<option value='" + item
+                .id + "'>" + item.CODE +
                 "</option>");
             });
           }
@@ -84,26 +82,26 @@ $languages          =           $data->getLanguages();
       });
 
 
-      
 
-      $("#selectFrame").change(function() {
-        var frameworkId = $(this).val();
+
+      $("#selectTipus").change(function() {
+        var tipusId = $(this).val();
         $(this).fadeIn();
 
         $.ajax({
           url: 'process-controller.php',
           type: 'POST',
           data: {
-            framId: frameworkId
+            tipId: tipusId
           },
           dataType: 'JSON',
 
           success: function(result) {
             var version = "";
-            $("#selectVersion").empty();
+            $("#selectMarka").empty();
 
             $.each(result, function(i, version) {
-              $("#selectVersion").append("<option>" + version.version +
+              $("#selectMarka").append("<option>" + version.version +
                 "</option>");
             });
           }
