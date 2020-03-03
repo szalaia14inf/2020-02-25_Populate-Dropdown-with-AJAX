@@ -1,115 +1,66 @@
-<?php
-include_once 'data-controller.php';
-
-//$data               =           new DataController();
-$markak         =           $data->getMarkak();
-?>
-
-<!DOCTYPE html>
-<html lang="hu">
-
+<!doctype html>
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <title>Autókatalógus</title>
+    <title>Autókatalógus</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="jquery-1.12.0.min.js" type="text/javascript"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            $("#gyártó").change(function(){
+                var deptid = $(this).val();
+
+                $.ajax({
+                    url: 'getUsers.php',
+                    type: 'post',
+                    data: {depart:deptid},
+                    dataType: 'json',
+                    success:function(response){
+
+                        var len = response.length;
+
+                        $("#modell").empty();
+                        for( var i = 0; i<len; i++){
+                            var id = response[i]['id'];
+                            var code = response[i]['code'];
+
+                            $("#modell").append("<option value='"+id+"'>"+code+"</option>");
+
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
 </head>
-
 <body>
-  <div class="container mt-5">
-    <div class="row">
-      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 m-auto d-block shadow p-5">
-        <form id="filterForm">
-          <label for="selectMarka">Márkák: </label>
-          <div class="form-group">
-            <select class="form-control form-control-md" id="selectMarka">
-              <option selected disabled>Választ </option>
-              <?php foreach ($markak as $markak) : ?>
-                <option value="<?php echo $markak['id']; ?> ">
-                  <?php echo $markak['markak_name']; ?> </option>
-              <?php endforeach; ?>
-            </select>
-          </div>
+<div class="container">
+    <h1>Lista</h1>
+    <div id="div_content">
 
-          <label for="selectFrame">Típusok: </label>
-          <div class="form-group">
-            <select class="form-control form-control-md" id="selectTipus">
-              <option>Választ </option>
-            </select>
-          </div>
-      </div>
-      </form>
+        <div>Márkák: </div>
+        <select id="gyártó">
+            <option value="0">- Választ -</option>
+            <option value="1">ACURA</option>
+            <option value="2">ALFA</option>
+            <option value="3">AMC</option>
+            <option value="4">ASTON</option>
+            <option value="5">AUDI</option>
+            <option value="6">AVANTI</option>
+        </select>
+        <div class="clear"></div>
+
+        <div>Típusok: </div>
+        <select id="modell">
+            <option value="0">- Select -</option>
+        </select>
+
     </div>
-  </div>
-  </div>
-
-  <script>
-
-    $(document).ready(function() {
-
-
-      $("#selectMarka").change(function() {
-        var markId = $(this).val();
-        $("#selectTipus").fadeIn('slow');
-
-        $.ajax({
-          url: 'process-controller.php',
-          type: 'POST',
-          data: {
-            markId: markId
-          },
-          dataType: "JSON",
-
-          success: function(result) {
-            var items = "";
-            $("#selectMarka").empty();
-            $("#selectTipus").empty();
-
-            $("#selectMarka").append(
-              "<option selected disabled> Választ </option>");
-            $("#selectTipus").append(
-              "<option selected disabled> Választ </option>");
-
-            $.each(result, function(i, item) {
-              $("#selectTipus").append("<option value='" + item
-                .id + "'>" + item.CODE +
-                "</option>");
-            });
-          }
-        });
-      });
-
-
-
-
-      $("#selectTipus").change(function() {
-        var tipusId = $(this).val();
-        $(this).fadeIn();
-
-        $.ajax({
-          url: 'process-controller.php',
-          type: 'POST',
-          data: {
-            tipId: tipusId
-          },
-          dataType: 'JSON',
-
-          success: function(result) {
-            var version = "";
-            $("#selectMarka").empty();
-
-            $.each(result, function(i, version) {
-              $("#selectMarka").append("<option>" + version.version +
-                "</option>");
-            });
-          }
-        });
-      });
-    });
-  </script>
-
+</div>
 </body>
-
 </html>
+
