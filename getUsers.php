@@ -2,19 +2,21 @@
 
 include_once "config.php";
 
-$departid = $_POST['depart'];   // department id
+$id = $_POST['id'];
 
-$sql = "SELECT id,code FROM gyártó WHERE code=".$departid;
+$sql = "SELECT id,code FROM gyártó WHERE code=".$id;
 
 $result = mysqli_query($con,$sql);
 
 $users_arr = array();
 
 while( $row = mysqli_fetch_array($result) ){
-    $userid = $row['id'];
-    $name = $row['CODE'];
+    $id = $row['id'];
+    $code = $row['code'];
 
-    $users_arr[] = array("id" => $userid, "code" => $name);
+    $users_arr[] = array("id" => $id, "code" => $code);
 }
 
 echo json_encode($users_arr);
+
+?>
